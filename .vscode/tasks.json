@@ -1,0 +1,68 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: Configure",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-B",
+                "build",
+                "-G",
+                "Visual Studio 17 2022",
+                "-DCMAKE_TOOLCHAIN_FILE=\"D:/vcpkg/scripts/buildsystems/vcpkg.cmake\"",
+                "-DVCPKG_TARGET_TRIPLET=x64-windows"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake: Build",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build",
+                "--config",
+                "${config:buildType}"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Cmake: Run",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/${config:buildType}/main.exe",
+            "options": {
+                "cwd": "${workspaceFolder}/build/${config:buildType}"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "clear": true
+            }
+        },
+        {
+            "label": "Cmake: Build & Run",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "CMake: Build",
+                "CMake: Run"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "Cmake: Configure & Build & Run",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "CMake: Configure",
+                "CMake: Build",
+                "CMake: Run"
+            ],
+            "group": "build"
+        }
+    ]
+}
