@@ -19,13 +19,16 @@ public:
     }
     ~ServerLogger()
     {
+        log("--- Log session ended ---", crow::LogLevel::Info);
         logFile_.close();
     }
 
     bool openFile(const std::string &fileName)
     {
         std::lock_guard<std::mutex> lg(mut_);
-        logFile_.open(fileName);
+        if (logFile_.is_open())
+            logFile_.close();
+        logFile_.open(fileName, std::ios::app);
         return logFile_.is_open();
     }
     bool isOpen() const
@@ -44,7 +47,7 @@ public:
 
         std::string resultMessage = time + ' ' + strName + ' ' + message + '\n';
 
-        if(logFile_.is_open())
+        if (logFile_.is_open())
             logFile_ << resultMessage;
         if (writeToConsole_)
         {
@@ -75,7 +78,7 @@ private: // static
 
     static void setColor(const Color c)
     {
-        std::cout << '\x1b' << '[' << static_cast<int>(c) << 'm';
+        std::cerr << '\x1b' << '[' << static_cast<int>(c) << 'm';
     }
 
     static std::pair<std::string, Color> toString(const crow::LogLevel level)
