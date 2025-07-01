@@ -14,8 +14,9 @@
 class ServerLogger : public crow::ILogHandler
 {
 public:
-    ServerLogger(const std::string &fileName, const bool writeToConsole = false) : logFile_{fileName}, writeToConsole_{writeToConsole}
+    ServerLogger(const std::string &fileName, const bool writeToConsole = false) : writeToConsole_{writeToConsole}
     {
+        openFile(fileName);
     }
     ~ServerLogger()
     {
@@ -34,15 +35,18 @@ public:
 
     void closeFile()
     {
-        std::lock_guard<std::mutex> lg(mut_);
         log("--- Log session ended ---", crow::LogLevel::Info);
+        std::lock_guard<std::mutex> lg(mut_);
         logFile_.close();
     }
     bool openFile(const std::string &fileName)
     {
-        closeFile();
-        std::lock_guard<std::mutex> lg(mut_);
+        if(isOpen())
+            closeFile();
+        mut_.lock();
         logFile_.open(fileName, std::ios::app);
+        mut_.unlock();
+        log("--- Log session started ---", crow::LogLevel::Info);
         return logFile_.is_open();
     }
     bool isOpen() const
