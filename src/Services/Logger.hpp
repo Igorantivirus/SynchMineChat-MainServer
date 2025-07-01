@@ -30,7 +30,7 @@ public:
     void setEntryToConsole(const bool writeToConsole)
     {
         std::lock_guard<std::mutex> lg(mut_);
-        writeToConsole_ = writeToConsole;        
+        writeToConsole_ = writeToConsole;
     }
 
     void closeFile()
@@ -41,7 +41,7 @@ public:
     }
     bool openFile(const std::string &fileName)
     {
-        if(isOpen())
+        if (isOpen())
             closeFile();
         mut_.lock();
         logFile_.open(fileName, std::ios::app);
@@ -101,13 +101,16 @@ private: // static
 
     static std::pair<std::string, Color> toString(const crow::LogLevel level)
     {
+        // clang-format off
         const static std::map<crow::LogLevel, std::pair<std::string, Color>> converter =
-            {
-                {crow::LogLevel::Critical, {"[ CRITICAL ]", Color::Purple}},
-                {crow::LogLevel::Debug, {"[ DEBUG    ]", Color::Default}},
-                {crow::LogLevel::Error, {"[ ERROR    ]", Color::Red}},
-                {crow::LogLevel::Info, {"[ INFO     ]", Color::Green}},
-                {crow::LogLevel::Warning, {"[ WARNING  ]", Color::Yellow}}};
+        {
+            {crow::LogLevel::Critical,  {"[ CRITICAL ]", Color::Purple  }},
+            {crow::LogLevel::Debug,     {"[ DEBUG    ]", Color::Default }},
+            {crow::LogLevel::Error,     {"[ ERROR    ]", Color::Red     }},
+            {crow::LogLevel::Info,      {"[ INFO     ]", Color::Green   }},
+            {crow::LogLevel::Warning,   {"[ WARNING  ]", Color::Yellow  }}
+        };
+        // clang-format on
         return converter.find(level)->second;
     }
 
