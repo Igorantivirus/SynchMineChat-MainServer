@@ -14,6 +14,7 @@
 class ServerLogger : public crow::ILogHandler
 {
 public:
+    ServerLogger() = default;
     ServerLogger(const std::string &fileName, const bool writeToConsole = false) : writeToConsole_{writeToConsole}
     {
         openFile(fileName);

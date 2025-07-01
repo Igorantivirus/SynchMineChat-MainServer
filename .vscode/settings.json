@@ -1,5 +1,5 @@
 {
-  "buildType": "Debug",
+  "buildType": "Release",
   "cmake.configureOnOpen": false,
   "cmake.configureOnEdit": false,
   "C_Cpp.default.cppStandard": "c++20",
