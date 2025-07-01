@@ -11,6 +11,12 @@ find_package(CROW REQUIRED)
 
 #end CROW
 
+#nlohmann_json
+find_package(nlohmann_json 3.12.0 REQUIRED)
+
+add_library(nlohmann_json INTERFACE IMPORTED)
+#end nlohmann_json
+
 #TgBot
 find_path(TGBOT_INCLUDE_DIR NAMES "tgbot/tgbot.h" PATHS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include")
 find_library(TGBOT_LIBRARY NAMES "TgBot" PATHS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib")
@@ -39,4 +45,5 @@ target_link_libraries(main
     Crow::Crow
 
     TgBot::TgBot
+    nlohmann_json::nlohmann_json
 )
