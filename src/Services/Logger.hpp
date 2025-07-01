@@ -19,15 +19,29 @@ public:
     }
     ~ServerLogger()
     {
+        closeFile();
+    }
+
+    bool isEntryToConsole() const
+    {
+        return writeToConsole_;
+    }
+    void setEntryToConsole(const bool writeToConsole)
+    {
+        std::lock_guard<std::mutex> lg(mut_);
+        writeToConsole_ = writeToConsole;        
+    }
+
+    void closeFile()
+    {
+        std::lock_guard<std::mutex> lg(mut_);
         log("--- Log session ended ---", crow::LogLevel::Info);
         logFile_.close();
     }
-
     bool openFile(const std::string &fileName)
     {
+        closeFile();
         std::lock_guard<std::mutex> lg(mut_);
-        if (logFile_.is_open())
-            logFile_.close();
         logFile_.open(fileName, std::ios::app);
         return logFile_.is_open();
     }
