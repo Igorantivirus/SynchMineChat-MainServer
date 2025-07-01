@@ -1,1 +1,101 @@
 #pragma once
+
+#include <fstream>
+#include <string>
+#include <mutex>
+#include <map>
+#include <iostream>
+#include <utility>
+#include <chrono>
+#include <format>
+
+#include "crow.h"
+
+class ServerLogger : public crow::ILogHandler
+{
+public:
+    ServerLogger(const std::string &fileName, const bool writeToConsole = false) : logFile_{fileName}, writeToConsole_{writeToConsole}
+    {
+    }
+    ~ServerLogger()
+    {
+        logFile_.close();
+    }
+
+    bool openFile(const std::string &fileName)
+    {
+        std::lock_guard<std::mutex> lg(mut_);
+        logFile_.open(fileName);
+        return logFile_.is_open();
+    }
+    bool isOpen() const
+    {
+        std::lock_guard<std::mutex> lg(mut_);
+        return logFile_.is_open();
+    }
+
+    void log(std::string message, crow::LogLevel level) override
+    {
+        std::lock_guard<std::mutex> lg(mut_);
+
+        std::string time = getCurentTime();
+
+        const auto [strName, color] = toString(level);
+
+        std::string resultMessage = time + ' ' + strName + ' ' + message + '\n';
+
+        if(logFile_.is_open())
+            logFile_ << resultMessage;
+        if (writeToConsole_)
+        {
+            setColor(color);
+            std::cerr << resultMessage;
+            setColor(Color::Default);
+        }
+    }
+
+private:
+    std::ofstream logFile_;
+    mutable std::mutex mut_;
+    bool writeToConsole_ = false;
+
+private: // static
+    enum class Color : unsigned char
+    {
+        Black = 30, // DEBUG
+        Red,        // ERROR
+        Green,      // INFO
+        Yellow,     // WARNING
+        Blue,
+        Purple, // CRITICAL
+        Cyan,
+        White,
+        Default = 39 // DEBUG
+    };
+
+    static void setColor(const Color c)
+    {
+        std::cout << '\x1b' << '[' << static_cast<int>(c) << 'm';
+    }
+
+    static std::pair<std::string, Color> toString(const crow::LogLevel level)
+    {
+        const static std::map<crow::LogLevel, std::pair<std::string, Color>> converter =
+            {
+                {crow::LogLevel::Critical, {"[ CRITICAL ]", Color::Purple}},
+                {crow::LogLevel::Debug, {"[ DEBUG    ]", Color::Default}},
+                {crow::LogLevel::Error, {"[ ERROR    ]", Color::Red}},
+                {crow::LogLevel::Info, {"[ INFO     ]", Color::Green}},
+                {crow::LogLevel::Warning, {"[ WARNING  ]", Color::Yellow}}};
+        return converter.find(level)->second;
+    }
+
+    static std::string getCurentTime()
+    {
+        auto now = std::chrono::system_clock::now();
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                      now.time_since_epoch()) %
+                  1000;
+        return std::format("({:%d-%m-%Y %X}:{:03d})", now, ms.count());
+    }
+};
