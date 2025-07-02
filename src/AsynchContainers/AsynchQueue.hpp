@@ -22,23 +22,23 @@ public:
         return queue_.size();
     }
 
-    void push(const T &value)
+    void push(const Type &value)
     {
         std::unique_lock<std::mutex> lg(mut_);
-        q.push_back(value);
+        queue_.push(value);
         lg.unlock();
-        cv.notify_one();
+        cv_.notify_one();
     }
 
-    T pop()
+    Type pop()
     {
         std::unique_lock<std::mutex> lg(mut_);
 
         cv_.wait(lg, [&]
-                 { return !q.empty(); });
+                 { return !queue_.empty(); });
 
-        T result = q.front();
-        q.pop_front();
+        Type result = queue_.front();
+        queue_.pop();
 
         return result;
     }
