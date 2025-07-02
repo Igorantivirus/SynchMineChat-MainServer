@@ -12,10 +12,13 @@ public:
     static void staticConstruct(const std::string &configFileName)
     {
         config = loadConfig(configFileName);
-        log.openFile(config.LOG_FILE);
 #ifdef _DEBUG
         log.setEntryToConsole(true);
 #endif
+        log.openFile(config.LOG_FILE);
         crow::logger::setHandler(&log);
     }
 };
+
+ServerConfig Service::config;
+ServerLogger Service::log;

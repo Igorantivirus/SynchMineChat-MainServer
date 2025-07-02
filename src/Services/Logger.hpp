@@ -36,7 +36,7 @@ public:
 
     void closeFile()
     {
-        log("--- Log session ended ---", crow::LogLevel::Info);
+        log("---  Log session ended  ---", crow::LogLevel::Info);
         std::lock_guard<std::mutex> lg(mut_);
         logFile_.close();
     }
@@ -103,16 +103,29 @@ private: // static
     static std::pair<std::string, Color> toString(const crow::LogLevel level)
     {
         // clang-format off
-        const static std::map<crow::LogLevel, std::pair<std::string, Color>> converter =
+        switch (level)
         {
-            {crow::LogLevel::Critical,  {"[ CRITICAL ]", Color::Purple  }},
-            {crow::LogLevel::Debug,     {"[ DEBUG    ]", Color::Default }},
-            {crow::LogLevel::Error,     {"[ ERROR    ]", Color::Red     }},
-            {crow::LogLevel::Info,      {"[ INFO     ]", Color::Green   }},
-            {crow::LogLevel::Warning,   {"[ WARNING  ]", Color::Yellow  }}
-        };
+            case crow::LogLevel::Critical:  return {"[  FATAL  ]", Color::Purple  };
+            case crow::LogLevel::Debug:     return {"[  DEBUG  ]", Color::Default };
+            case crow::LogLevel::Error:     return {"[  ERROR  ]", Color::Red     };
+            case crow::LogLevel::Info:      return {"[   INF   ]", Color::Green   };
+            case crow::LogLevel::Warning:   return {"[ WARNING ]", Color::Yellow  };
+            default:                        return {"[ UNKNOWN ]", Color::Default };
+        }
         // clang-format on
-        return converter.find(level)->second;
+
+        // // clang-format off
+        // static const std::map<crow::LogLevel, std::pair<std::string, Color>> converter =
+        // {
+        //     {crow::LogLevel::Critical,  {"[ CRITICAL ]", Color::Purple  }},
+        //     {crow::LogLevel::Debug,     {"[ DEBUG    ]", Color::Default }},
+        //     {crow::LogLevel::Error,     {"[ ERROR    ]", Color::Red     }},
+        //     {crow::LogLevel::Info,      {"[ INFO     ]", Color::Green   }},
+        //     {crow::LogLevel::Warning,   {"[ WARNING  ]", Color::Yellow  }}
+        // };
+        // // clang-format on
+        // std::cout << converter.empty() << '\n';
+        // return converter.find(level)->second;
     }
 
     static std::string getCurentTime()
