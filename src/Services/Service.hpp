@@ -16,5 +16,6 @@ public:
 #ifdef _DEBUG
         log.setEntryToConsole(true);
 #endif
+        crow::logger::setHandler(&log);
     }
 };
