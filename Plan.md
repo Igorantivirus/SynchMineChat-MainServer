@@ -5,9 +5,9 @@
    2. ✅~~Static классы~~
         * ~~Логгер~~
         * ~~Конфиг~~
-   3. Общая структура 
-        * ClientBrocker
-        * ClientSubscriber
+   3. ✅~~Общая структура ~~
+        * ~~ClientBrocker~~
+        * ~~ClientSubscriber~~
    4. Клиенты
         * CrowClient
         * TgBotClient
