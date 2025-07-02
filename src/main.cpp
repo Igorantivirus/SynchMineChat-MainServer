@@ -7,6 +7,7 @@
 
 int main()
 {
-    
+    Service::staticConstruct("resources\\ServerConfig.json");
+
     return 0;
 }
