@@ -96,7 +96,8 @@
     "numeric": "cpp",
     "random": "cpp",
     "shared_mutex": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "set": "cpp"
   },
   "[cpp]": {
     "editor.formatOnType": true
