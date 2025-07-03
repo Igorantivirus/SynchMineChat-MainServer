@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Logger.hpp"
-#include "ServerConfig.hpp"
+#include "Configs/ServerConfig.hpp"
 
 class Service
 {
@@ -11,7 +11,7 @@ public:
 
     static void staticConstruct(const std::string &configFileName)
     {
-        config = loadConfig(configFileName);
+        config = loadServerConfig(configFileName);
 #ifdef _DEBUG
         log.setEntryToConsole(true);
 #endif
