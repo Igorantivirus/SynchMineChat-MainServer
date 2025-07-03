@@ -26,7 +26,7 @@ public:
     }
 
 protected:
-    std::mutex mut_;
+    mutable std::mutex mut_;
     const ClientType type_ = ClientType::none;
     const IDType id_;
 
