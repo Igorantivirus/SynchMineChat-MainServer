@@ -1,3 +1,4 @@
 /build
-/resources
+/resources/ServerConfig.json
+/resources/TgBotConfig.json
 /logs
