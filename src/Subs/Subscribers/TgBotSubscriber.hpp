@@ -1,12 +1,14 @@
 #pragma once
 
 #include <cstdint>
+#include <atomic>
 #include <vector>
 #include <functional>
 
-#include <tgbot/Bot.h>
+#include <tgbot/tgbot.h>
 
 #include "../../Services/Configs/TgBotConfig.hpp"
+#include "../../Services/Configs/TgBotResponseConfig.hpp"
 #include "../../Services/Service.hpp"
 
 #include "../ClientSubscriber.hpp"
@@ -21,11 +23,36 @@ public:
     {
         brocker_.subscribe(*this);
         usersInfo_ = loadTgBotConfig(Service::config.TG_BOT_CONFIG);
+        responseConfig_ = loadTgBotResponseConfig(Service::config.TG_BOT_RESPONSE_CONFIG);
+
+        initKeyboard();
+        initResponses();
+
+        Service::log.log("Bot started. Bot name: " + bot_.getApi().getMe()->username, crow::LogLevel::Info);
+    }
+    ~TgBotSubscriber()
+    {
+        saveTgBotConfig(usersInfo_, Service::config.TG_BOT_CONFIG);
     }
 
     void sendMessage(const Message &msg) override
     {
+        if (msg.type == MessageType::text)
+        {
+            std::string sMsg = '<' + msg["userName"] + '>' + ' ' + msg["text"];
+            sendMessageToAllTgExcept(sMsg);
+        }
+        else if (msg.type == MessageType::audio)
+        {
+            // TODO
+        }
     }
+
+    void DebugRun()
+    {
+        longPoll();
+    }
+    
 
 private:
     // посредник
@@ -37,6 +64,9 @@ private:
 
     // Информация о чатах
     TgBotConfig usersInfo_;
+    TgBotResponseConfig responseConfig_;
+
+    std::atomic<bool> isWorking_ = true;
 
 #pragma region Static Methods
 
@@ -60,6 +90,7 @@ private:
 #pragma endregion
 
 #pragma region Initializing
+
 private:
     void initKeyboard()
     {
@@ -69,8 +100,9 @@ private:
         // clang-format off
         keyboard_->keyboard =
         {
-            {makeButton("/help"),          makeButton("/online")},
-            {makeButton("/updateChats"),   makeButton("/start") }
+            {makeButton("/start"),  makeButton("/help")       },
+            {makeButton("/online"), makeButton("/renew")      },
+            {makeButton("/update"), makeButton("/registrate") }
         };
         // clang-format onn
     }
@@ -78,11 +110,13 @@ private:
     void initResponses()
     {
         // clang-format off
-        // bot_.getEvents().onCommand("start",       [this](TgBot::Message::Ptr message) { start(message);          });
-        // bot_.getEvents().onCommand("online",      [this](TgBot::Message::Ptr message) { online(message);         });
-        // bot_.getEvents().onCommand("help",        [this](TgBot::Message::Ptr message) { help(message);           });
-        // bot_.getEvents().onCommand("updateChats", [this](TgBot::Message::Ptr message) { updateChats(message);    });
-        // bot_.getEvents().onNonCommandMessage(     [this](TgBot::Message::Ptr message) { processMessage(message); });
+        bot_.getEvents().onCommand("start",       [this](TgBot::Message::Ptr message) { start(message);          });
+        bot_.getEvents().onCommand("help",        [this](TgBot::Message::Ptr message) { help(message);           });
+        bot_.getEvents().onCommand("online",      [this](TgBot::Message::Ptr message) { online(message);         });
+        bot_.getEvents().onCommand("renew",       [this](TgBot::Message::Ptr message) { renew(message);          });
+        bot_.getEvents().onCommand("update",      [this](TgBot::Message::Ptr message) { update(message);         });
+        bot_.getEvents().onCommand("registrate",  [this](TgBot::Message::Ptr message) { registrate(message);     });
+        bot_.getEvents().onNonCommandMessage(     [this](TgBot::Message::Ptr message) { processMessage(message); });
         // clang-format on
     }
 
@@ -90,16 +124,17 @@ private:
 
 #pragma region Events
 
-    // Проверяет, что сообщение от пользователя - админа
+private:
     bool isAdmin(TgBot::Message::Ptr message) const
     {
-        if (message->chat->type != TgBot::Chat::Type::Supergroup && message->chat->type != TgBot::Chat::Type::Group)
+        if (message->chat->type != TgBot::Chat::Type::Private && message->chat->type != TgBot::Chat::Type::Supergroup && message->chat->type != TgBot::Chat::Type::Group)
             return false;
-        auto admins = bot_.getApi().getChatAdministrators(message->chat->id);
-        for (const auto &admin : admins)
-            if (admin->user->id == message->from->id)
-                return true;
-        return false;
+        return usersInfo_.ADMINS_ID.count(message->from->id);
+        // auto admins = bot_.getApi().getChatAdministrators(message->chat->id);
+        // for (const auto &admin : admins)
+        //     if (admin->user->id == message->from->id)
+        //         return true;
+        // return false;
     }
     bool isChatIsOpen(const int64_t id) const
     {
@@ -108,61 +143,74 @@ private:
 
     void start(TgBot::Message::Ptr message) const
     {
-        std::string result = to_utf8(L"Добро пожаловать в бот нашего сервера. Чтобы ваши сообщения поступали в наш чат необходимо, чтоб один из администраторов ввёл команду \"/registrate\"");
-        sendMessage(message->chat->id, result);
-    }
-    void online(TgBot::Message::Ptr message) const
-    {
-        sendMessage(message->chat->id, to_utf8(L"К сожалению, сейчас эта команда не доступна. Ждите обновления."));
+        sendMessage(message->chat->id, responseConfig_.start_command);
     }
     void help(TgBot::Message::Ptr message) const
     {
-        std::string responce = to_utf8(LR"(Добро пожаловать в бота сервера ABSserver.
-Список команд:
-/help        - вы сейчас её используете
-/online      - проверка онлайна сервера
-/renew       - запустить сервер
-/registrate  - зарегестрировать сервер
-/updateChats - обновить список чатов и админов)");
-        sendMessage(message->chat->id, responce);
+        sendMessage(message->chat->id, responseConfig_.help_comand);
     }
-    void updateChats(TgBot::Message::Ptr message)
+    void online(TgBot::Message::Ptr message) const
     {
-        if (message->chat->type != TgBot::Chat::Type::Private && !isAdmin(message))
-            return;
-        usersInfo_ = loadTgBotConfig(Service::config.TG_BOT_CONFIG);
-        std::string result;
-        if (isChatIsOpen(message->chat->id))
-            result = to_utf8(L"Ваш чат активен!");
-        else
-            result = to_utf8(L"Ваш чат не активен!");
-        sendMessage(message->chat->id, result);
+        // TODO
+        sendMessage(message->chat->id, responseConfig_.online_comand_fatal);
     }
+    void renew(TgBot::Message::Ptr message) const
+    {
+        // TODO
+        sendMessage(message->chat->id, responseConfig_.renew_command_fatal);
+    }
+    void update(TgBot::Message::Ptr message)
+    {
+        if (!isAdmin(message))
+            return sendMessage(message->chat->id, responseConfig_.not_admin);
+
+        usersInfo_ = loadTgBotConfig(Service::config.TG_BOT_CONFIG);
+        responseConfig_ = loadTgBotResponseConfig(Service::config.TG_BOT_RESPONSE_CONFIG);
+        sendMessage(message->chat->id, responseConfig_.update);
+    }
+    void registrate(TgBot::Message::Ptr message)
+    {
+        if (!isAdmin(message))
+            return sendMessage(message->chat->id, responseConfig_.not_admin);
+        usersInfo_.CHATS_ID.insert(message->chat->id);
+        saveTgBotConfig(usersInfo_, Service::config.TG_BOT_CONFIG);
+        sendMessage(message->chat->id, responseConfig_.registrate_command);
+    }
+
     void processMessage(TgBot::Message::Ptr message)
     {
-        //TODO
+        // (Сообщение пустой и нет голосового ) или чат закрыт
+        if ((message->text.empty() && !message->voice) || !isChatIsOpen(message->chat->id))
+            return;
+        Service::log.log(message->text, crow::LogLevel::Debug);
+        if (message->voice)
+        {
+            Message msg;
+            msg.from = type_;
+            msg.to = ClientType::any;
+            msg.fromId = id_;
+            msg.type = MessageType::audio;
+            msg.msg["userName"] = message->from->username;
+            msg.msg["audioFile"] = bot_.getApi().getFile(message->voice->fileId)->filePath;
 
-        // if (
-        //     (!message->text.empty() && message->text[0] == '/') ||
-        //     (message->text.empty() && !message->voice) ||
-        //     !isChatIsOpen(message->chat->id) ||
-        //     notGeneralInSuperGroup(message))
-        //     return;
-        // if (message->text.size() > 1000)
-        //     return sendMessage(message->chat->id, to_utf8(L"Слишком длинное сообщение."));
+            brocker_.addMessage(msg);
+            sendAudioToAllTgExcept(bot_.getApi().getFile(message->voice->fileId)->filePath, message->chat->id);
+        }
+        else
+        {
+            Message msg;
+            msg.from = type_;
+            msg.to = ClientType::any;
+            msg.fromId = id_;
+            msg.type = MessageType::text;
+            msg.msg["userName"] = message->from->username;
+            msg.msg["text"] = message->text;
 
-        // if (message->voice)
-        // {
-        //     Service::log.log("VOICE!!!");
-        //     TgBot::File::Ptr file = bot_.getApi().getFile(message->voice->fileId);
-        //     brocker_.sendMessage(id_, file->filePath, TypeMessage::voice);
-        // }
-        // else
-        // {
-        //     std::string result = '<' + message->from->username + '>' + ' ' + message->text;
-        //     brocker_.sendMessage(id_, result, TypeMessage::message);
-        //     sendMessageToAllTgExcept(result, message->chat->id);
-        // }
+            brocker_.addMessage(msg);
+
+            std::string textMessage = '<' + message->from->username + '>' + ' ' + message->text;
+            sendMessageToAllTgExcept(textMessage, message->chat->id);
+        }
     }
 
 #pragma endregion
@@ -172,20 +220,43 @@ private:
 private:
     void sendMessage(const int64_t chatId, const std::string &message) const
     {
+        std::unique_lock<std::mutex> lg(mut_);
 #if defined(_WIN32) || defined(_WIN64)
         bot_.getApi().sendMessage(chatId, message, false, 0, keyboard_);
 #else
         bot_.getApi().sendMessage(chatId, message, nullptr, 0, keyboard_);
 #endif // WIN
     }
-
     void sendMessageToAllTgExcept(const std::string &message, const std::int64_t exceptIdTg = 0) const
     {
+        std::unique_lock<std::mutex> lg(mut_);
         for (const auto &chatId : usersInfo_.CHATS_ID)
             if (chatId != exceptIdTg)
                 sendMessage(chatId, message);
     }
+    void sendAudioToAllTgExcept(const std::string &filePath, const std::int64_t exceptIdTg = 0) const
+    {
+        std::unique_lock<std::mutex> lg(mut_);
+        for (const auto &chatId : usersInfo_.CHATS_ID)
+            if (chatId != exceptIdTg)
+            {
+                // TODO
+            }
+    }
 
 #pragma endregion
 
+#pragma region Runing
+
+    void longPoll()
+    {
+        TgBot::TgLongPoll longPoll(bot_);
+        while (isWorking_)
+        {
+            Service::log.log("Long poll started", crow::LogLevel::Debug);
+            longPoll.start();
+        }
+    }
+
+#pragma endregion
 };

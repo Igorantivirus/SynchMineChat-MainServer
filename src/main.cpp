@@ -15,20 +15,25 @@ int main()
 {
     Service::staticConstruct("resources\\ServerConfig.json");
 
-    Service::log.log(to_utf8(L"Привет, АБОБА"), crow::LogLevel::Info);
+    ClientBrocker brocker;
 
-    // TgBotConfig conf = loadTgBotConfig("resources\\TgBotConfig.json");
-    // // conf.loadTgBotConfig();
+    TgBotSubscriber tgBot(brocker);
+    tgBot.DebugRun();
+
+    // Service::log.log(to_utf8(L"Привет, АБОБА"), crow::LogLevel::Info);
 
     // // TgBotConfig conf = loadTgBotConfig("resources\\TgBotConfig.json");
+    // // // conf.loadTgBotConfig();
 
-    // for (const auto &i : conf.ADMINS_ID)
-    //     Service::log.log(std::to_string(i), crow::LogLevel::Info);
+    // // // TgBotConfig conf = loadTgBotConfig("resources\\TgBotConfig.json");
 
-    // for (const auto &i : conf.CHATS_ID)
-    //     Service::log.log(std::to_string(i), crow::LogLevel::Info);
+    // // for (const auto &i : conf.ADMINS_ID)
+    // //     Service::log.log(std::to_string(i), crow::LogLevel::Info);
 
-    // saveTgBotConfig(conf, "resources\\TgBotConfig.json");
+    // // for (const auto &i : conf.CHATS_ID)
+    // //     Service::log.log(std::to_string(i), crow::LogLevel::Info);
+
+    // // saveTgBotConfig(conf, "resources\\TgBotConfig.json");
 
     return 0;
 }
