@@ -17,7 +17,7 @@ enum class ClientType : unsigned char
 std::string toString(const ClientType f)
 {
     // clang-format off
-    const static std::map<ClientType, std::string> converter =
+    static const std::map<ClientType, std::string> converter =
     {
         { ClientType::none,       "none"      },
         { ClientType::telegram,   "tg"        },
@@ -28,10 +28,11 @@ std::string toString(const ClientType f)
     // clang-format on
     return converter.find(f)->second;
 }
+
 ClientType toClientType(const std::string &str)
 {
     // clang-format off
-    const static std::map<std::string, ClientType> converter =
+    static const std::map<std::string, ClientType> converter =
     {
         { "tg",     ClientType::telegram    },
         { "mine",   ClientType::minecraft   },
@@ -68,7 +69,7 @@ std::string toString(const MessageType type)
 MessageType toMessageType(const std::string type)
 {
     // clang-format off
-    std::map<std::string, MessageType> converter =
+    static const std::map<std::string, MessageType> converter =
     {
         {"none",    MessageType::none   },
         {"text",    MessageType::text   },
