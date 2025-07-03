@@ -69,4 +69,11 @@ public:
     }
 
 #pragma endregion
+
+    const std::string operator[](const std::string& key) const
+    {
+        const auto found = msg.find(key);
+        return found == msg.end() ? std::string() : found->second;
+    }
+
 };
