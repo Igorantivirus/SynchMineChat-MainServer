@@ -97,7 +97,10 @@
     "random": "cpp",
     "shared_mutex": "cpp",
     "valarray": "cpp",
-    "set": "cpp"
+    "set": "cpp",
+    "cfenv": "cpp",
+    "cwctype": "cpp",
+    "memory_resource": "cpp"
   },
   "[cpp]": {
     "editor.formatOnType": true
