@@ -12,8 +12,11 @@ using RowJson = std::map<std::string, std::string>;
 struct Message
 {
     IDType fromId{};
+
     ClientType from = ClientType::none;
     ClientType to = ClientType::none;
+
+    MessageType type = MessageType::none;
 
     RowJson msg;
 
@@ -41,13 +44,14 @@ public:
     void fromJson(const nlohmann::json &json)
     {
         fromId = json["fromID"].get<IDType>();
-        from = fromString(json["from"].get<std::string>());
-        to = fromString(json["to"].get<std::string>());
+        from = toClientType(json["from"].get<std::string>());
+        to = toClientType(json["to"].get<std::string>());
+        type = toMessageType(json["type"].get<std::string>());
 
         for (auto it = json.begin(); it != json.end(); ++it)
         {
             const std::string &key = it.key();
-            if (key != "from" && key != "to" && key != "fromID")
+            if (key != "from" && key != "to" && key != "fromID" && key != "type")
                 msg[key] = it.value();
         }
     }
@@ -58,6 +62,7 @@ public:
         res["fromID"] = std::to_string(fromId);
         res["from"] = toString(from);
         res["to"] = toString(to);
+        res["type"] = toString(type);
         for (const auto &[key, value] : msg)
             res[key] = value;
         return res;
