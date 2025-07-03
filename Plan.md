@@ -10,7 +10,7 @@
         * ~~ClientSubscriber~~
    4. ⏳Клиенты
         * CrowClient
-        * TgBotClient
+        * ~~TgBotClient~~
    5. Сообщения 
       * Структура отправки сообщений
       * Обработка сообщений
