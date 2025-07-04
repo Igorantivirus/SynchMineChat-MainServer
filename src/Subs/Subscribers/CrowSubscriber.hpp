@@ -28,6 +28,7 @@ public:
 
     void sendMessage(const Message &msg) override
     {
+        Service::log.log("Message to minecraft!", crow::LogLevel::Info);
         for(const auto& [key, value] : users_)
             if(value.registered && value.type == msg.to)
                 key->send_text(msg.toJson().dump());
@@ -35,7 +36,7 @@ public:
 
     void asynchRun()
     {
-        app_.port(config_.SERVER_PORT).multithreaded().run();
+        server_future_ = app_.port(config_.SERVER_PORT).multithreaded().run_async();
     }
 
 private:
@@ -59,6 +60,8 @@ private:
     std::atomic<bool> isWorking_ = true;
 
     CrowConfig config_;
+
+    std::shared_future<void> server_future_;
 
 private:
 
