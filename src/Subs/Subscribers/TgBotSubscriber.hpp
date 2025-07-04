@@ -183,7 +183,6 @@ private:
         // (Сообщение пустой и нет голосового ) или чат закрыт
         if ((message->text.empty() && !message->voice) || !isChatIsOpen(message->chat->id))
             return;
-        Service::log.log(message->text, crow::LogLevel::Debug);
         if (message->voice)
         {
             Message msg;
