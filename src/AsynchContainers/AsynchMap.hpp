@@ -24,17 +24,27 @@ public:
 
     ValueT& operator[](const KeyT& key)
     {
+        std::lock_guard<std::mutex> lg(mut_);
         return map_[key];
     }
     const ValueT& safelyGet(const KeyT& key, const ValueT& elseValue) const
     {
+        std::lock_guard<std::mutex> lg(mut_);
         const auto found = map_.find(key);
         return found != map_.end() ? found->second : elseValue;
     }
 
     void remove(const KeyT& key)
     {
+        std::lock_guard<std::mutex> lg(mut_);
         map_.remove(key);
+    }
+
+    bool have(const KeyT& key) const
+    {
+        std::lock_guard<std::mutex> lg(mut_);
+        const auto found = map_.find(key);
+        return found != map_.end();
     }
 
     #pragma region begin end
