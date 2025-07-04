@@ -48,9 +48,10 @@ public:
         }
     }
 
-    void DebugRun()
+    void runNoAsynch()
     {
-        longPoll();
+        while(isWorking_)
+            longPoll();
     }
     
 
