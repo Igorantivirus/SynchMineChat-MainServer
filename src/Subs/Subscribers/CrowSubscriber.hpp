@@ -9,6 +9,7 @@
 
 #include "../../AsynchContainers/AsynchMap.hpp"
 
+#include "../../Services/Configs/CrowConfig.hpp"
 #include "../../Services/Service.hpp"
 
 #include "../ClientSubscriber.hpp"
@@ -19,7 +20,7 @@
 class CrowSubscriber : public ClientSubscriber
 {
 public:
-    CrowSubscriber(ClientBrocker& brocker) : ClientSubscriber{ClientType::server}, brocker_{brocker}
+    CrowSubscriber(ClientBrocker& brocker) : ClientSubscriber{ClientType::server}, brocker_{brocker}, config_{loadCrowConfig(Service::config.CROW_CONFIG)}
     {
         brocker_.subscribe(*this);
         init();
@@ -34,7 +35,7 @@ public:
 
     void asynchRun()
     {
-        //TODO
+        app_.port(config_.SERVER_PORT).multithreaded().run();
     }
 
 private:
@@ -56,6 +57,8 @@ private:
     AsynchSafelyMap<UserTypePtr, UserInfo> users_;
 
     std::atomic<bool> isWorking_ = true;
+
+    CrowConfig config_;
 
 private:
 
