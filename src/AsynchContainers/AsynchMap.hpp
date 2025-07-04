@@ -34,10 +34,10 @@ public:
         return found != map_.end() ? found->second : elseValue;
     }
 
-    void remove(const KeyT& key)
+    void erase(const KeyT& key)
     {
         std::lock_guard<std::mutex> lg(mut_);
-        map_.remove(key);
+        map_.erase(key);
     }
 
     bool have(const KeyT& key) const
