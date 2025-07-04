@@ -102,15 +102,12 @@ private:
 
     void disconectUser(UserTypePtr user, const std::string response)
     {
-        std::lock_guard lg(mut_);
         users_.erase(user);
         user->close(response);
     }
 
     void processMessages(crow::websocket::connection &conn, const Message& msg)
     {
-        std::lock_guard lg(mut_);
-
         if(msg.to == ClientType::server)
             return;
         brocker_.addMessage(msg);
@@ -118,14 +115,14 @@ private:
 
     void registrate(crow::websocket::connection &conn, const Message& msg)
     {
-        std::lock_guard lg(mut_);
-        // TODO
+        if(msg["SECRET_KEY"] != config_.SECRET_KEY)
+            disconectUser(&conn, "Failed regiostration");
         users_[&conn].registered = true;
     }
 
 private:
 
-    nlohmann::json toJson(const std::string& str)
+    static nlohmann::json toJson(const std::string& str)
     {
         try
         {
