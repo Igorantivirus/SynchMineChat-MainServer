@@ -49,23 +49,23 @@ public:
 
     #pragma region begin end
 
-    std::vector<ValueT>::const_iterator begin() const
+    std::map<KeyT, ValueT>::const_iterator begin() const
     {
         std::lock_guard<std::mutex> lg(mut_);
         return map_.begin();
     }
-    std::vector<ValueT>::const_iterator end() const
+    std::map<KeyT, ValueT>::const_iterator end() const
     {
         std::lock_guard<std::mutex> lg(mut_);
         return map_.end();
     }
 
-    std::vector<ValueT>::iterator begin()
+    std::map<KeyT, ValueT>::iterator begin()
     {
         std::unique_lock<std::mutex> lg(mut_);
         return map_.begin();
     }
-    std::vector<ValueT>::iterator end()
+    std::map<KeyT, ValueT>::iterator end()
     {
         std::unique_lock<std::mutex> lg(mut_);
         return map_.end();
