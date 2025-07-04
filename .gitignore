@@ -1,4 +1,5 @@
 /build
 /resources/ServerConfig.json
 /resources/TgBotConfig.json
+/resources/CrowConfig.json
 /logs
