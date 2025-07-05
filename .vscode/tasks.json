@@ -32,12 +32,9 @@
             ]
         },
         {
-            "label": "Cmake: Run",
+            "label": "CMake: Run",
             "type": "shell",
             "command": "${workspaceFolder}/build/${config:buildType}/main.exe",
-            "options": {
-                "cwd": "${workspaceFolder}/build/${config:buildType}"
-            },
             "group": "build",
             "presentation": {
                 "reveal": "always",
@@ -46,7 +43,7 @@
             }
         },
         {
-            "label": "Cmake: Build & Run",
+            "label": "CMake: Build & Run",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "CMake: Build",
@@ -55,7 +52,7 @@
             "group": "build"
         },
         {
-            "label": "Cmake: Configure & Build & Run",
+            "label": "CMake: Configure & Build & Run",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "CMake: Configure",
