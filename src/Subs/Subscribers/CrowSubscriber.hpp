@@ -120,7 +120,7 @@ private:
 
     void registrate(crow::websocket::connection &conn, const Message& msg)
     {
-        if(msg["SECRET_KEY"] != config_.SECRET_KEY)
+        if(msg["key"] != config_.SECRET_KEY)
             disconectUser(&conn, "Failed regiostration");
         users_[&conn].registered = true;
     }
