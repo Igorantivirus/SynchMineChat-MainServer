@@ -49,7 +49,10 @@ enum class MessageType : unsigned char
     none = 0,
     text,
     audio,
-    command
+    command,
+    left,
+    join,
+    achievement
 };
 
 std::string toString(const MessageType type)
@@ -57,10 +60,13 @@ std::string toString(const MessageType type)
     // clang-format off
     std::map<MessageType, std::string> converter =
     {
-        {MessageType::none,     "none"      },
-        {MessageType::text,     "text"      },
-        {MessageType::audio,    "audio"     },
-        {MessageType::command,  "command"   }
+        {MessageType::none,        "none"       },
+        {MessageType::text,        "text"       },
+        {MessageType::audio,       "audio"      },
+        {MessageType::command,     "command"    },
+        {MessageType::left,        "left"       },
+        {MessageType::join,        "join"       },
+        {MessageType::achievement, "achievement"}
     };
     // clang-format on
     return converter.find(type)->second;
@@ -71,10 +77,13 @@ MessageType toMessageType(const std::string type)
     // clang-format off
     static const std::map<std::string, MessageType> converter =
     {
-        {"none",    MessageType::none   },
-        {"text",    MessageType::text   },
-        {"audio",   MessageType::audio  },
-        {"command", MessageType::command}
+        {"none",        MessageType::none       },
+        {"text",        MessageType::text       },
+        {"audio",       MessageType::audio      },
+        {"command",     MessageType::command    },
+        {"left",        MessageType::left       },
+        {"join",        MessageType::join       },
+        {"achievement", MessageType::achievement}
     };
     // clang-format on
     const auto found = converter.find(type);
