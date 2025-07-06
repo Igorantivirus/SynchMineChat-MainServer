@@ -43,10 +43,10 @@ public:
 
     void fromJson(const nlohmann::json &json)
     {
-        fromId = json["fromID"].get<IDType>();
-        from = toClientType(json["from"].get<std::string>());
-        to = toClientType(json["to"].get<std::string>());
-        type = toMessageType(json["type"].get<std::string>());
+        from = toClientType(json.value("from", std::string("none")));
+        to = toClientType(json.value("to", std::string("none")));
+        type = toMessageType(json.value("type", std::string("none")));
+        fromId = json.value("fromID", 0);
 
         for (auto it = json.begin(); it != json.end(); ++it)
         {
