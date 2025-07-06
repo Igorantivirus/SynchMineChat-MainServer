@@ -37,15 +37,21 @@ public:
 
     void sendMessage(const Message &msg) override
     {
-        if (msg.type == MessageType::text)
-        {
-            std::string sMsg = '<' + msg["userName"] + '>' + ' ' + msg["text"];
-            sendMessageToAllTgExcept(sMsg);
-        }
-        else if (msg.type == MessageType::audio)
+        if (msg.type == MessageType::audio)
         {
             // TODO
         }
+        std::string sMsg;
+        if (msg.type == MessageType::text)
+            sMsg = '<' + msg["userName"] + '>' + ' ' + msg["text"];
+        else if (msg.type == MessageType::achievement)
+            sMsg = msg["userName"] + ' ' + responseConfig_.achievement + ' ' + msg["text"];
+        else if (msg.type == MessageType::left)
+            sMsg = msg["userName"] + ' ' + responseConfig_.left_the_game;
+        else if (msg.type == MessageType::join)
+            sMsg = msg["userName"] + ' ' + responseConfig_.join_the_game;
+            
+        sendMessageToAllTgExcept(sMsg);
     }
 
     void runNoAsynch()
