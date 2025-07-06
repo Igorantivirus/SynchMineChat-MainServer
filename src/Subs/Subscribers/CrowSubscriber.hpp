@@ -30,7 +30,7 @@ public:
     {
         Service::log.log("Message to minecraft!", crow::LogLevel::Info);
         for(const auto& [key, value] : users_)
-            if(value.registered && value.type == msg.to)
+            if(value.registered && (value.type == msg.to || msg.to == ClientType::any))
                 key->send_text(msg.toJson().dump());
     }
 
@@ -94,8 +94,10 @@ private:
     {
         Message msg;
         msg.fromJson(toJson(data));
+        msg.fromId = id_;
 
-        if(users_.safelyGet(&conn, {}).registered)
+        UserInfo pass;
+        if(users_.safelyGet(&conn, pass).registered)
             processMessages(conn, msg);
         else
             registrate(conn, msg);
