@@ -19,8 +19,11 @@ struct TgBotResponseConfig
     std::string update;
     std::string registrate_command;
     std::string not_admin;
+    std::string left_the_game;
+    std::string join_the_game;
+    std::string achievement;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(TgBotResponseConfig, start_command, help_comand, online_comand_success, online_comand_fatal, renew_command_success, renew_command_already, renew_command_fatal, update, registrate_command, not_admin)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(TgBotResponseConfig, start_command, help_comand, online_comand_success, online_comand_fatal, renew_command_success, renew_command_already, renew_command_fatal, update, registrate_command, not_admin, left_the_game, join_the_game, achievement)
 };
 
 inline TgBotResponseConfig loadTgBotResponseConfig(const std::string &config_path)
