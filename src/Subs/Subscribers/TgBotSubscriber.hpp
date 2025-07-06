@@ -235,14 +235,12 @@ private:
     }
     void sendMessageToAllTgExcept(const std::string &message, const std::int64_t exceptIdTg = 0) const
     {
-        std::unique_lock<std::mutex> lg(mut_);
         for (const auto &chatId : usersInfo_.CHATS_ID)
             if (chatId != exceptIdTg)
                 sendMessage(chatId, message);
     }
     void sendAudioToAllTgExcept(const std::string &filePath, const std::int64_t exceptIdTg = 0) const
     {
-        std::unique_lock<std::mutex> lg(mut_);
         for (const auto &chatId : usersInfo_.CHATS_ID)
             if (chatId != exceptIdTg)
             {
