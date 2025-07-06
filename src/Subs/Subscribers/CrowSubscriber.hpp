@@ -131,7 +131,7 @@ private:
     {
         try
         {
-            return nlohmann::json{str};
+            return nlohmann::json::parse(str);
         }
         catch(...)
         {
