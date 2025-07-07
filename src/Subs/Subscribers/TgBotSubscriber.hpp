@@ -4,6 +4,8 @@
 #include <atomic>
 #include <vector>
 #include <functional>
+#include <thread>
+#include <memory>
 
 #include <tgbot/tgbot.h>
 
@@ -54,13 +56,24 @@ public:
         sendMessageToAllTgExcept(sMsg);
     }
 
-    void runNoAsynch()
+    void stop()
+    {
+        isWorking_ = false;
+        if(runThreadPtr_ && runThreadPtr_->joinable())
+            runThreadPtr_->join();
+    }
+
+    void multithreadedRun()
+    {
+        runThreadPtr_ = std::make_unique<std::thread>(&TgBotSubscriber::run, this);
+    }
+
+    void run()
     {
         while(isWorking_)
             longPoll();
     }
     
-
 private:
     // посредник
     ClientBrocker &brocker_;
@@ -74,6 +87,8 @@ private:
     TgBotResponseConfig responseConfig_;
 
     std::atomic<bool> isWorking_ = true;
+
+    std::unique_ptr<std::thread> runThreadPtr_ = nullptr;
 
 #pragma region Static Methods
 

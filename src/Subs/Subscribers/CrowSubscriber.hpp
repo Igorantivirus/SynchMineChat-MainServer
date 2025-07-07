@@ -34,7 +34,7 @@ public:
                 key->send_text(msg.toJson().dump());
     }
 
-    void asynchRun()
+    void multithreadedRun()
     {
         server_future_ = app_.port(config_.SERVER_PORT).multithreaded().run_async();
     }

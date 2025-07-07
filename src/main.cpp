@@ -17,8 +17,10 @@ int main()
     TgBotSubscriber tg{brocker};
     CrowSubscriber crow{brocker};
 
-    crow.asynchRun();
-    tg.runNoAsynch();
+    crow.multithreadedRun();
+    tg.multithreadedRun();
+
+    brocker.run();
 
     return 0;
 }

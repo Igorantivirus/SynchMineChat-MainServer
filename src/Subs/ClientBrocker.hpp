@@ -17,7 +17,7 @@
 class ClientBrocker
 {
 public:
-    ClientBrocker() : processMessagesTh_{&ClientBrocker::processMessages, this}
+    ClientBrocker()// : processMessagesTh_{&ClientBrocker::processMessages, this}
     {
         //
     }
@@ -41,15 +41,21 @@ public:
     {
         isWorking_ = false;
         messages_.push(Message{}); // Разблокировка ожидания в очереди
-        if (processMessagesTh_.joinable())
-            processMessagesTh_.join();
+        // if (processMessagesTh_.joinable())
+        //     processMessagesTh_.join();
         subs_.clear();
+    }
+
+    void run()
+    {
+        while (isWorking_)
+            sendToSubscribers(messages_.pop());
     }
 
 private: // Поля
     // Очередь сообщений (потокобзопасная)
     AsynchSafelyQueue<Message> messages_;
-    std::thread processMessagesTh_;
+    // std::thread processMessagesTh_;
 
     // Работа с подписчиками
     std::vector<std::reference_wrapper<ClientSubscriber>> subs_;
@@ -58,11 +64,6 @@ private: // Поля
     std::atomic<bool> isWorking_ = true;
 
 private:
-    void processMessages()
-    {
-        while (isWorking_)
-            sendToSubscribers(messages_.pop());
-    }
 
     void sendToSubscribers(const Message &msg)
     {
