@@ -42,17 +42,21 @@ public:
         Service::log.log("Start to stop brocker.", crow::LogLevel::Info);
         isWorking_ = false;
         messages_.push(Message{}); // Разблокировка ожидания в очереди
-        // if (processMessagesTh_.joinable())
-        //     processMessagesTh_.join();
-        for(auto& i : subs_)
-            i.get().stop();
-        subs_.clear();
+        std::this_thread::sleep_for(std::chrono::milliseconds(250));
     }
 
     void run()
     {
         while (isWorking_)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(75));
             sendToSubscribers(messages_.pop());
+        }
+        // if (processMessagesTh_.joinable())
+        //     processMessagesTh_.join();
+        for(auto& i : subs_)
+            i.get().stop();
+        subs_.clear();
     }
 
 private: // Поля

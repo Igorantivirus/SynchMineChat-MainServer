@@ -22,7 +22,7 @@ int main()
 
     brocker.run();
 
-    brocker.stop();
+    // brocker.stop();
 
     return 0;
 }

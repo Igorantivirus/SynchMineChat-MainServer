@@ -188,6 +188,8 @@ private:
         usersInfo_ = loadTgBotConfig(Service::config.TG_BOT_CONFIG);
         responseConfig_ = loadTgBotResponseConfig(Service::config.TG_BOT_RESPONSE_CONFIG);
         sendMessage(message->chat->id, responseConfig_.update);
+        if(!usersInfo_.CONTINUE_WORKING)
+            brocker_.stop();
     }
     void registrate(TgBot::Message::Ptr message)
     {
