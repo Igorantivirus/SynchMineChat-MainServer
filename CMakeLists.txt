@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 20)
 # CROW
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
-find_package(CROW REQUIRED)
+find_package(Crow REQUIRED)
 #end CROW
 
 #nlohmann_json
