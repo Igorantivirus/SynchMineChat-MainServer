@@ -11,31 +11,37 @@ find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 
 if(WIN32)
+    
     find_package(CROW REQUIRED)
+    
 else()
+    
     FetchContent_Declare(
         CROW
         GIT_REPOSITORY https://github.com/CrowCpp/Crow
         GIT_TAG        main
     )
+    FetchContent_MakeAvailable(CROW)
+    
 endif()
-
 #end CROW
 
 #nlohmann_json
 if(WIN32)
+
     find_package(nlohmann_json 3.12.0 REQUIRED)
     add_library(nlohmann_json INTERFACE IMPORTED)
+
 else()
+
     find_package(nlohmann_json REQUIRED)
+
 endif()
-
-
-
 #end nlohmann_json
 
 #TgBot
 if(WIN32)
+
     find_path(TGBOT_INCLUDE_DIR NAMES "tgbot/tgbot.h" PATHS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include")
     find_library(TGBOT_LIBRARY NAMES "TgBot" PATHS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib")
 
@@ -50,6 +56,7 @@ if(WIN32)
     add_library(TgBot::TgBot INTERFACE IMPORTED)
     target_include_directories(TgBot::TgBot INTERFACE ${TGBOT_INCLUDE_DIR})
     target_link_libraries(TgBot::TgBot INTERFACE ${TGBOT_LIBRARY})
+
 else()
 
     find_package(Threads REQUIRED)
@@ -66,7 +73,6 @@ endif()
 
 add_executable(main src/main.cpp)
 
-# CROW
 target_link_libraries(main
     PRIVATE
     OpenSSL::SSL
@@ -75,6 +81,7 @@ target_link_libraries(main
     nlohmann_json::nlohmann_json
 )
 
+#CROW & TgBot
 if(WIN32)
     
     target_link_libraries(main
