@@ -59,7 +59,7 @@ public:
     nlohmann::json toJson() const
     {
         nlohmann::json res;
-        res["fromID"] = std::to_string(fromId);
+        res["fromID"] = fromId;
         res["from"] = toString(from);
         res["to"] = toString(to);
         res["type"] = toString(type);
