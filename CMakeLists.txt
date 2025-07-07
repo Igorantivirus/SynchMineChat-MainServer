@@ -9,21 +9,7 @@ set(CMAKE_CXX_STANDARD 20)
 # CROW
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
-
-if(WIN32)
-    
-    find_package(CROW REQUIRED)
-    
-else()
-    
-    FetchContent_Declare(
-        CROW
-        GIT_REPOSITORY https://github.com/CrowCpp/Crow
-        GIT_TAG        main
-    )
-    FetchContent_MakeAvailable(CROW)
-    
-endif()
+find_package(CROW REQUIRED)
 #end CROW
 
 #nlohmann_json
@@ -68,6 +54,7 @@ else()
         add_definitions(-DHAVE_CURL)
     endif()
 
+
 endif()
 #end TgBot
 
@@ -78,27 +65,17 @@ target_link_libraries(main
     OpenSSL::SSL
     OpenSSL::Crypto
     ZLIB::ZLIB
+    Crow::Crow
     nlohmann_json::nlohmann_json
 )
 
-#CROW & TgBot
+#TgBot
 if(WIN32)
     
-    target_link_libraries(main
-        PRIVATE
-        Crow::Crow
-        TgBot::TgBot
-    )
+    target_link_libraries(main PRIVATE TgBot::TgBot)
 
 else()
 
-    target_link_libraries(main PRIVATE Crow)
     target_link_libraries(main PRIVATE /usr/local/lib/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES})
-
-    include(GNUInstallDirs)
-    install(TARGETS main
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    )
 
 endif()
