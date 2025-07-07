@@ -30,6 +30,7 @@ public:
         initKeyboard();
         initResponses();
 
+        std::lock_guard lg(mut_);
         Service::log.log("Bot started. Bot name: " + bot_.getApi().getMe()->username, crow::LogLevel::Info);
     }
 
@@ -130,6 +131,7 @@ private:
 
     void initResponses()
     {
+        std::lock_guard lg(mut_);
         // clang-format off
         bot_.getEvents().onCommand("start",       [this](TgBot::Message::Ptr message) { start(message);          });
         bot_.getEvents().onCommand("help",        [this](TgBot::Message::Ptr message) { help(message);           });
