@@ -170,7 +170,7 @@ private:
 
     void stop(TgBot::Message::Ptr message)
     {
-        if(!notGeneralInSuperGroup(message))
+        if(notGeneralInSuperGroup(message))
             return;
         if (!isAdmin(message))
             return sendMessage(message->chat->id, responseConfig_.not_admin);
@@ -179,33 +179,33 @@ private:
     }
     void start(TgBot::Message::Ptr message) const
     {
-        if(!notGeneralInSuperGroup(message))
+        if(notGeneralInSuperGroup(message))
             return;
         sendMessage(message->chat->id, responseConfig_.start_command);
     }
     void help(TgBot::Message::Ptr message) const
     {
-        if(!notGeneralInSuperGroup(message))
+        if(notGeneralInSuperGroup(message))
             return;
         sendMessage(message->chat->id, responseConfig_.help_comand);
     }
     void online(TgBot::Message::Ptr message) const
     {
-        if(!notGeneralInSuperGroup(message))
+        if(notGeneralInSuperGroup(message))
             return;
         // TODO
         sendMessage(message->chat->id, responseConfig_.online_comand_fatal);
     }
     void renew(TgBot::Message::Ptr message) const
     {
-        if(!notGeneralInSuperGroup(message))
+        if(notGeneralInSuperGroup(message))
             return;
         // TODO
         sendMessage(message->chat->id, responseConfig_.renew_command_fatal);
     }
     void update(TgBot::Message::Ptr message)
     {
-        if(!notGeneralInSuperGroup(message))
+        if(notGeneralInSuperGroup(message))
             return;
         if (!isAdmin(message))
             return sendMessage(message->chat->id, responseConfig_.not_admin);
@@ -216,7 +216,7 @@ private:
     }
     void registrate(TgBot::Message::Ptr message)
     {
-        if(!notGeneralInSuperGroup(message))
+        if(notGeneralInSuperGroup(message))
             return;
         if (!isAdmin(message))
             return sendMessage(message->chat->id, responseConfig_.not_admin);
@@ -230,7 +230,7 @@ private:
         // (Сообщение пустой и нет голосового ) или чат закрыт
         if ((message->text.empty() && !message->voice) || !isChatIsOpen(message->chat->id))
             return;
-        if(!notGeneralInSuperGroup(message))
+        if(notGeneralInSuperGroup(message))
             return;
         if (message->voice)
         {
