@@ -70,10 +70,15 @@ private:
         CROW_WEBSOCKET_ROUTE(app_, "/ws")
             .onopen([this](crow::websocket::connection &conn)
                     { this->onOpen(conn); })
-            .onclose([this](crow::websocket::connection &conn, const std::string &reason, uint16_t v)
-                    { this->onClose(conn, reason, v); })
             .onmessage([this](crow::websocket::connection &conn, const std::string &data, bool is_binary)
-                    { this->onMessage(conn, data, is_binary); });
+                       { this->onMessage(conn, data, is_binary); })
+        #if defined(_WIN32) || defined(_WIN64)
+            .onclose([this](crow::websocket::connection &conn, const std::string &reason, uint16_t)
+                     { this->onClose(conn, reason); });
+        #else
+            .onclose([this](crow::websocket::connection &conn, const std::string &reason)
+                            { this->onClose(conn, reason); });
+        #endif
     }
 
     #pragma region Server methods
@@ -84,7 +89,7 @@ private:
         users_[&conn] = {false};
     }
 
-    void onClose(crow::websocket::connection &conn, const std::string &reason, uint16_t)
+    void onClose(crow::websocket::connection &conn, const std::string &reason)
     {
         Service::log.log("Some client disconnected.", crow::LogLevel::Info);
         users_.erase(&conn);
