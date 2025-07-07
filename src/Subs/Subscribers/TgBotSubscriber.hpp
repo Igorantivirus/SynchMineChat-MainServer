@@ -141,7 +141,7 @@ private:
         bot_.getEvents().onCommand("online",      [this](TgBot::Message::Ptr message) { online(message);         });
         bot_.getEvents().onCommand("renew",       [this](TgBot::Message::Ptr message) { renew(message);          });
         bot_.getEvents().onCommand("update",      [this](TgBot::Message::Ptr message) { update(message);         });
-        bot_.getEvents().onCommand("registrate",  [this](TgBot::Message::Ptr message) { registrate(message);     });
+        bot_.getEvents().onCommand("register",    [this](TgBot::Message::Ptr message) { registrate(message);     });
         bot_.getEvents().onCommand("stop",        [this](TgBot::Message::Ptr message) { stop(message);           });
         bot_.getEvents().onNonCommandMessage(     [this](TgBot::Message::Ptr message) { processMessage(message); });
         // clang-format on
