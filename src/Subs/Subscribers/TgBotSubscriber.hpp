@@ -70,8 +70,14 @@ public:
 
     void run()
     {
-        while(isWorking_)
-            longPoll();
+        TgBot::TgLongPoll longPoll(bot_);
+        while (isWorking_)
+        {
+            #ifdef _DEBUG
+            Service::log.log("Long poll started", crow::LogLevel::Debug);
+            #endif
+            longPoll.start();
+        }
     }
     
 private:
@@ -274,19 +280,4 @@ private:
 
 #pragma endregion
 
-#pragma region Runing
-
-    void longPoll()
-    {
-        TgBot::TgLongPoll longPoll(bot_);
-        while (isWorking_)
-        {
-            #ifdef _DEBUG
-            Service::log.log("Long poll started", crow::LogLevel::Debug);
-            #endif
-            longPoll.start();
-        }
-    }
-
-#pragma endregion
 };
