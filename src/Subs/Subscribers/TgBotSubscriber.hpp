@@ -73,9 +73,6 @@ public:
         TgBot::TgLongPoll longPoll(bot_);
         while (isWorking_)
         {
-            #ifdef _DEBUG
-            Service::log.log("Long poll started", crow::LogLevel::Debug);
-            #endif
             longPoll.start();
         }
     }

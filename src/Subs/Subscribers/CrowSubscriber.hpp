@@ -29,8 +29,6 @@ public:
     void sendMessage(const Message &msg) override
     {
         std::string textToSend = msg.toJson().dump();
-        Service::log.log("Message to minecraft!", crow::LogLevel::Info);
-        Service::log.log("Next send: " + textToSend, crow::LogLevel::Debug);
         for(const auto& [key, value] : users_)
             if(value.registered && (value.type == msg.to || msg.to == ClientType::any))
                 key->send_text(textToSend);
