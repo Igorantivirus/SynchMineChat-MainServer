@@ -17,10 +17,12 @@ int main()
     TgBotSubscriber tg{brocker};
     CrowSubscriber crow{brocker};
 
-    crow.multithreadedRun();
     tg.multithreadedRun();
+    crow.multithreadedRun();
 
     brocker.run();
+
+    brocker.stop();
 
     return 0;
 }

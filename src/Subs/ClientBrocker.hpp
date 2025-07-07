@@ -39,10 +39,13 @@ public:
 
     void stop()
     {
+        Service::log.log("Start to stop brocker.", crow::LogLevel::Info);
         isWorking_ = false;
         messages_.push(Message{}); // Разблокировка ожидания в очереди
         // if (processMessagesTh_.joinable())
         //     processMessagesTh_.join();
+        for(auto& i : subs_)
+            i.get().stop();
         subs_.clear();
     }
 

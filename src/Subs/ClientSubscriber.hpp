@@ -12,9 +12,13 @@ public:
     ClientSubscriber(const ClientType type) : type_{type}, id_{++countSubers_}
     {
     }
-    virtual ~ClientSubscriber() = default;
+    virtual ~ClientSubscriber()
+    {
+        this->stop();
+    }
 
     virtual void sendMessage(const Message& msg) = 0;
+    virtual void stop() {}
 
     const ClientType getType() const
     {

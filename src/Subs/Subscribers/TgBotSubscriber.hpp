@@ -32,10 +32,6 @@ public:
 
         Service::log.log("Bot started. Bot name: " + bot_.getApi().getMe()->username, crow::LogLevel::Info);
     }
-    ~TgBotSubscriber()
-    {
-        saveTgBotConfig(usersInfo_, Service::config.TG_BOT_CONFIG);
-    }
 
     void sendMessage(const Message &msg) override
     {
@@ -56,11 +52,14 @@ public:
         sendMessageToAllTgExcept(sMsg);
     }
 
-    void stop()
+    void stop() override
     {
+        Service::log.log("Start to stop Tg bot.", crow::LogLevel::Info);
+        saveTgBotConfig(usersInfo_, Service::config.TG_BOT_CONFIG);
         isWorking_ = false;
         if(runThreadPtr_ && runThreadPtr_->joinable())
             runThreadPtr_->join();
+        Service::log.log("Tg bot stopped.", crow::LogLevel::Info);
     }
 
     void multithreadedRun()

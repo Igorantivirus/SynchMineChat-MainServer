@@ -34,6 +34,14 @@ public:
                 key->send_text(msg.toJson().dump());
     }
 
+    void stop() override
+    {
+        Service::log.log("Crow start to stopp.", crow::LogLevel::Info);
+        app_.port(config_.SERVER_PORT).multithreaded().stop();
+        server_future_.wait();
+        Service::log.log("Crow stopped.", crow::LogLevel::Info);
+    }
+
     void multithreadedRun()
     {
         server_future_ = app_.port(config_.SERVER_PORT).multithreaded().run_async();
