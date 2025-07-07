@@ -47,7 +47,12 @@ public:
         mut_.lock();
         logFile_.open(fileName, std::ios::app);
         mut_.unlock();
+            
         log("--- Log session started ---", crow::LogLevel::Info);
+        
+        if(!logFile_.is_open())
+           log("Couldn't open the logs file: " + fileName, crow::LogLevel::Warning);
+        
         return logFile_.is_open();
     }
     bool isOpen() const
