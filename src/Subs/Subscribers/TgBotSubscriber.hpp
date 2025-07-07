@@ -170,6 +170,8 @@ private:
 
     void stop(TgBot::Message::Ptr message)
     {
+        if(!notGeneralInSuperGroup(message))
+            return;
         if (!isAdmin(message))
             return sendMessage(message->chat->id, responseConfig_.not_admin);
         sendMessage(message->chat->id, responseConfig_.stoping_run);
@@ -177,24 +179,34 @@ private:
     }
     void start(TgBot::Message::Ptr message) const
     {
+        if(!notGeneralInSuperGroup(message))
+            return;
         sendMessage(message->chat->id, responseConfig_.start_command);
     }
     void help(TgBot::Message::Ptr message) const
     {
+        if(!notGeneralInSuperGroup(message))
+            return;
         sendMessage(message->chat->id, responseConfig_.help_comand);
     }
     void online(TgBot::Message::Ptr message) const
     {
+        if(!notGeneralInSuperGroup(message))
+            return;
         // TODO
         sendMessage(message->chat->id, responseConfig_.online_comand_fatal);
     }
     void renew(TgBot::Message::Ptr message) const
     {
+        if(!notGeneralInSuperGroup(message))
+            return;
         // TODO
         sendMessage(message->chat->id, responseConfig_.renew_command_fatal);
     }
     void update(TgBot::Message::Ptr message)
     {
+        if(!notGeneralInSuperGroup(message))
+            return;
         if (!isAdmin(message))
             return sendMessage(message->chat->id, responseConfig_.not_admin);
 
@@ -204,6 +216,8 @@ private:
     }
     void registrate(TgBot::Message::Ptr message)
     {
+        if(!notGeneralInSuperGroup(message))
+            return;
         if (!isAdmin(message))
             return sendMessage(message->chat->id, responseConfig_.not_admin);
         usersInfo_.CHATS_ID.insert(message->chat->id);
@@ -215,6 +229,8 @@ private:
     {
         // (Сообщение пустой и нет голосового ) или чат закрыт
         if ((message->text.empty() && !message->voice) || !isChatIsOpen(message->chat->id))
+            return;
+        if(!notGeneralInSuperGroup(message))
             return;
         if (message->voice)
         {
@@ -254,11 +270,13 @@ private:
     void sendMessage(const int64_t chatId, const std::string &message) const
     {
         std::unique_lock<std::mutex> lg(mut_);
+
 #if defined(_WIN32) || defined(_WIN64)
-        bot_.getApi().sendMessage(chatId, message, false, 0, keyboard_);
+        bool thirdParam = false;
 #else
-        bot_.getApi().sendMessage(chatId, message, nullptr, 0, keyboard_);
+        decltype(nullptr) thirdParam = nullptr;
 #endif // WIN
+        bot_.getApi().sendMessage(chatId, message, thirdParam, 0/*, keyboard_*/);
     }
     void sendMessageToAllTgExcept(const std::string &message, const std::int64_t exceptIdTg = 0) const
     {
