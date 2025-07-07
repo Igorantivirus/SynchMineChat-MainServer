@@ -137,6 +137,7 @@ private:
         bot_.getEvents().onCommand("renew",       [this](TgBot::Message::Ptr message) { renew(message);          });
         bot_.getEvents().onCommand("update",      [this](TgBot::Message::Ptr message) { update(message);         });
         bot_.getEvents().onCommand("registrate",  [this](TgBot::Message::Ptr message) { registrate(message);     });
+        bot_.getEvents().onCommand("stop",        [this](TgBot::Message::Ptr message) { stop(message);           });
         bot_.getEvents().onNonCommandMessage(     [this](TgBot::Message::Ptr message) { processMessage(message); });
         // clang-format on
     }
@@ -162,6 +163,13 @@ private:
         return usersInfo_.CHATS_ID.count(id);
     }
 
+    void stop(TgBot::Message::Ptr message)
+    {
+        if (!isAdmin(message))
+            return sendMessage(message->chat->id, responseConfig_.not_admin);
+        sendMessage(message->chat->id, responseConfig_.stoping_run);
+        brocker_.stop();
+    }
     void start(TgBot::Message::Ptr message) const
     {
         sendMessage(message->chat->id, responseConfig_.start_command);
@@ -188,8 +196,6 @@ private:
         usersInfo_ = loadTgBotConfig(Service::config.TG_BOT_CONFIG);
         responseConfig_ = loadTgBotResponseConfig(Service::config.TG_BOT_RESPONSE_CONFIG);
         sendMessage(message->chat->id, responseConfig_.update);
-        if(!usersInfo_.CONTINUE_WORKING)
-            brocker_.stop();
     }
     void registrate(TgBot::Message::Ptr message)
     {
