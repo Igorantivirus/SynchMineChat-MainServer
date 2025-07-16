@@ -301,7 +301,7 @@ private:
             msg.to = ClientType::any;
             msg.fromId = id_;
             msg.type = MessageType::audio;
-            msg.msg["userName"] = message->from->username;
+            msg.msg["userName"] = usersInfo_.getMinecraftName(message->from->username);
             msg.msg["audioFile"] = bot_.getApi().getFile(message->voice->fileId)->filePath;
 
             brocker_.addMessage(msg);
@@ -314,7 +314,7 @@ private:
             msg.to = ClientType::any;
             msg.fromId = id_;
             msg.type = MessageType::text;
-            msg.msg["userName"] = message->from->username;
+            msg.msg["userName"] = usersInfo_.getMinecraftName(message->from->username);
             msg.msg["text"] = message->text;
 
             brocker_.addMessage(msg);
