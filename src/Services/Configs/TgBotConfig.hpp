@@ -30,6 +30,7 @@ inline void saveTgBotConfig(const TgBotConfig& conf, const std::string &fileName
     nlohmann::json json;
     json["ADMINS_ID"] = conf.ADMINS_ID;
     json["CHATS_ID"] = conf.CHATS_ID;
+    json["USERS_NICKS"] = conf.USERS_NICKS;
     std::ofstream configFile(fileName);
     configFile << json;
     configFile.close();
