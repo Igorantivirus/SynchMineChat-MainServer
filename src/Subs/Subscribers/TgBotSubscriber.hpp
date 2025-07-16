@@ -127,7 +127,7 @@ private:
         {
             {makeButton("/start"),  makeButton("/help")       },
             {makeButton("/online"), makeButton("/renew")      },
-            {makeButton("/update"), makeButton("/registrate") }
+            {makeButton("/update"), makeButton("/startChat") }
         };
         // clang-format onn
     }
@@ -141,7 +141,8 @@ private:
         bot_.getEvents().onCommand("online",      [this](TgBot::Message::Ptr message) { online(message);         });
         bot_.getEvents().onCommand("renew",       [this](TgBot::Message::Ptr message) { renew(message);          });
         bot_.getEvents().onCommand("update",      [this](TgBot::Message::Ptr message) { update(message);         });
-        bot_.getEvents().onCommand("register",    [this](TgBot::Message::Ptr message) { registrate(message);     });
+        bot_.getEvents().onCommand("startChat",   [this](TgBot::Message::Ptr message) { startChat(message);      });
+        bot_.getEvents().onCommand("stopChat",    [this](TgBot::Message::Ptr message) { stopChat(message);       });
         bot_.getEvents().onCommand("stop",        [this](TgBot::Message::Ptr message) { stop(message);           });
         bot_.getEvents().onNonCommandMessage(     [this](TgBot::Message::Ptr message) { processMessage(message); });
         // clang-format on
@@ -214,7 +215,7 @@ private:
         responseConfig_ = loadTgBotResponseConfig(Service::config.TG_BOT_RESPONSE_CONFIG);
         sendMessage(message->chat->id, responseConfig_.update);
     }
-    void registrate(TgBot::Message::Ptr message)
+    void startChat(TgBot::Message::Ptr message)
     {
         if(notGeneralInSuperGroup(message))
             return;
@@ -222,7 +223,19 @@ private:
             return sendMessage(message->chat->id, responseConfig_.not_admin);
         usersInfo_.CHATS_ID.insert(message->chat->id);
         saveTgBotConfig(usersInfo_, Service::config.TG_BOT_CONFIG);
-        sendMessage(message->chat->id, responseConfig_.registrate_command);
+        sendMessage(message->chat->id, responseConfig_.start_chat_command);
+    }
+    void stopChat(TgBot::Message::Ptr message)
+    {
+        if(notGeneralInSuperGroup(message))
+            return;
+        if (!isAdmin(message))
+            return sendMessage(message->chat->id, responseConfig_.not_admin);
+        if(usersInfo_.CHATS_ID.count(message->chat->id) == 0)
+            return;
+        usersInfo_.CHATS_ID.erase(message->chat->id);
+        saveTgBotConfig(usersInfo_, Service::config.TG_BOT_CONFIG);
+        sendMessage(message->chat->id, responseConfig_.stop_chat_command);
     }
 
     void processMessage(TgBot::Message::Ptr message)
