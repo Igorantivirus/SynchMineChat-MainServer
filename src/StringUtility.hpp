@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include <vector>
 #include <string>
 
 #include <locale>
@@ -15,9 +15,9 @@ std::string to_utf8(const std::wstring &str)
 namespace StringUtils
 {
 
-    std::list<std::string> split(const std::string &s, const char c)
+    std::vector<std::string> split(const std::string &s, const char c)
     {
-        std::list<std::string> res;
+        std::vector<std::string> res;
         std::size_t last = 0;
         for (std::size_t ind = s.find(c); ind != std::string::npos; last = ind + 1, ind = s.find(c, last))
             res.push_back(s.substr(last, ind - last));
