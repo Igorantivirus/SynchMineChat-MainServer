@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <set>
+#include <map>
 #include <filesystem>
 #include <fstream>
 
@@ -11,8 +12,9 @@ struct TgBotConfig
 {
     std::set<std::int64_t> ADMINS_ID;
     std::set<std::int64_t> CHATS_ID;
+    std::map<std::string, std::string> USERS_NICKS;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(TgBotConfig, ADMINS_ID, CHATS_ID)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(TgBotConfig, ADMINS_ID, CHATS_ID, USERS_NICKS)
 };
 
 inline TgBotConfig loadTgBotConfig(const std::string &config_path)
