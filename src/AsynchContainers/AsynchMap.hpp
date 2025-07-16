@@ -47,6 +47,15 @@ public:
         return found != map_.end();
     }
 
+    std::map<KeyT, ValueT>& getStdMap()
+    {
+        return map_;
+    }
+    const std::map<KeyT, ValueT>& getStdMap() const
+    {
+        return map_;
+    }
+
     #pragma region begin end
 
     std::map<KeyT, ValueT>::const_iterator begin() const

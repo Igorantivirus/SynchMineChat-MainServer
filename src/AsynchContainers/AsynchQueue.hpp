@@ -43,6 +43,15 @@ public:
         return result;
     }
 
+    std::queue<Type>& getStdQueue()
+    {
+        return queue_;
+    }
+    const std::queue<Type>& getStdQueue() const
+    {
+        return queue_;
+    }
+
 private:
     std::queue<Type> queue_;
 

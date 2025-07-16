@@ -10,6 +10,15 @@ class AsynchSafelyVector
 public:
     AsynchSafelyVector() = default;
 
+    std::vector<Type>& getStdVector()
+    {
+        return vector_;
+    }
+    const std::vector<Type>& getStdVector() const
+    {
+        return vector_;
+    }
+
     #pragma region memory
 
     void resize(const size_t newSize, const Type& newValue = Type{})
