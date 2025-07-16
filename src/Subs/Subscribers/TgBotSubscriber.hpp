@@ -9,6 +9,8 @@
 
 #include <tgbot/tgbot.h>
 
+#include "../../AsynchContainers/AsynchMap.hpp"
+
 #include "../../Services/Configs/TgBotConfig.hpp"
 #include "../../Services/Configs/TgBotResponseConfig.hpp"
 #include "../../Services/Service.hpp"
@@ -144,6 +146,9 @@ private:
         bot_.getEvents().onCommand("startChat",   [this](TgBot::Message::Ptr message) { startChat(message);      });
         bot_.getEvents().onCommand("stopChat",    [this](TgBot::Message::Ptr message) { stopChat(message);       });
         bot_.getEvents().onCommand("stop",        [this](TgBot::Message::Ptr message) { stop(message);           });
+        bot_.getEvents().onCommand("bindNick",    [this](TgBot::Message::Ptr message) { bindNick(message);       });
+        bot_.getEvents().onCommand("showNicks",   [this](TgBot::Message::Ptr message) { showNicks(message);      });
+        bot_.getEvents().onCommand("deleteNick",  [this](TgBot::Message::Ptr message) { deleteNick(message);     });
         bot_.getEvents().onNonCommandMessage(     [this](TgBot::Message::Ptr message) { processMessage(message); });
         // clang-format on
     }
@@ -188,6 +193,8 @@ private:
     {
         if(notGeneralInSuperGroup(message))
             return;
+        if (isAdmin(message))
+            return sendMessage(message->chat->id, responseConfig_.admin_help_command);
         sendMessage(message->chat->id, responseConfig_.help_comand);
     }
     void online(TgBot::Message::Ptr message) const
@@ -236,6 +243,48 @@ private:
         usersInfo_.CHATS_ID.erase(message->chat->id);
         saveTgBotConfig(usersInfo_, Service::config.TG_BOT_CONFIG);
         sendMessage(message->chat->id, responseConfig_.stop_chat_command);
+    }
+    void bindNick(TgBot::Message::Ptr message)
+    {
+        if(notGeneralInSuperGroup(message))
+            return;
+        if (!isAdmin(message))
+            return sendMessage(message->chat->id, responseConfig_.not_admin);
+
+        auto params = StringUtils::split(message->text, ' ');
+        if(params.size() != 3)
+            return sendMessage(message->chat->id, responseConfig_.command_params_error);
+        usersInfo_.USERS_NICKS[params[1]] = params[2];
+        saveTgBotConfig(usersInfo_, Service::config.TG_BOT_CONFIG);
+        sendMessage(message->chat->id, responseConfig_.bind_succes);
+    }
+    void showNicks(TgBot::Message::Ptr message)
+    {
+        if(notGeneralInSuperGroup(message))
+            return;
+        if (!isAdmin(message))
+            return sendMessage(message->chat->id, responseConfig_.not_admin);
+        std::string result = "tg - minecraft\n";
+        for(const auto& [key, value] : usersInfo_.USERS_NICKS)
+            result += key + " - " + value + '\n';
+        sendMessage(message->chat->id, result);
+    }
+    void deleteNick(TgBot::Message::Ptr message)
+    {
+        if(notGeneralInSuperGroup(message))
+            return;
+        if (!isAdmin(message))
+            return sendMessage(message->chat->id, responseConfig_.not_admin);
+
+        auto params = StringUtils::split(message->text, ' ');
+        if(params.size() != 2)
+            return sendMessage(message->chat->id, responseConfig_.command_params_error);
+            
+        if(usersInfo_.USERS_NICKS.find(params[1]) == usersInfo_.USERS_NICKS.end())
+            return sendMessage(message->chat->id, responseConfig_.delete_fatal);
+        usersInfo_.USERS_NICKS.erase(params[1]);
+        saveTgBotConfig(usersInfo_, Service::config.TG_BOT_CONFIG);
+        sendMessage(message->chat->id, responseConfig_.delete_succes);
     }
 
     void processMessage(TgBot::Message::Ptr message)
