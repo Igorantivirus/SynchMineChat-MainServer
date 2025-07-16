@@ -29,9 +29,13 @@ public:
     void sendMessage(const Message &msg) override
     {
         std::string textToSend = msg.toJson().dump();
+        std::cout << "next send: " << textToSend << '\n';
         for(const auto& [key, value] : users_)
             if(value.registered && (value.type == msg.to || msg.to == ClientType::any))
+            {
+                std::cout << "Sending!\n";
                 key->send_text(textToSend);
+            }
     }
 
     void stop() override
