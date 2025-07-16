@@ -158,7 +158,7 @@ private:
         bot_.getEvents().onCommand("update",      [this](TgBot::Message::Ptr message) { update(message);         });
         bot_.getEvents().onCommand("startChat",   [this](TgBot::Message::Ptr message) { startChat(message);      });
         bot_.getEvents().onCommand("stopChat",    [this](TgBot::Message::Ptr message) { stopChat(message);       });
-        bot_.getEvents().onCommand("stop",        [this](TgBot::Message::Ptr message) { stop(message);           });
+        bot_.getEvents().onCommand("stop",        [this](TgBot::Message::Ptr message) { stopAll(message);        });
         bot_.getEvents().onCommand("bindNick",    [this](TgBot::Message::Ptr message) { bindNick(message);       });
         bot_.getEvents().onCommand("showNicks",   [this](TgBot::Message::Ptr message) { showNicks(message);      });
         bot_.getEvents().onCommand("deleteNick",  [this](TgBot::Message::Ptr message) { deleteNick(message);     });
