@@ -138,31 +138,31 @@ private:
     {
         std::lock_guard lg(mut_);
         // clang-format off
-        // bot_.getEvents().onCommand("start",      std::bind(&TgBotSubscriber::start,          this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("help",       std::bind(&TgBotSubscriber::help,           this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("online",     std::bind(&TgBotSubscriber::online,         this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("renew",      std::bind(&TgBotSubscriber::renew,          this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("update",     std::bind(&TgBotSubscriber::update,         this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("startChat",  std::bind(&TgBotSubscriber::startChat,      this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("stopChat",   std::bind(&TgBotSubscriber::stopChat,       this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("bindNick",   std::bind(&TgBotSubscriber::bindNick,       this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("showNicks",  std::bind(&TgBotSubscriber::showNicks,      this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("deleteNick", std::bind(&TgBotSubscriber::deleteNick,     this, std::placeholders::_1));
-        // bot_.getEvents().onCommand("stop",       std::bind(&TgBotSubscriber::stopAll,        this, std::placeholders::_1));
-        // bot_.getEvents().onNonCommandMessage(    std::bind(&TgBotSubscriber::processMessage, this, std::placeholders::_1));
+        bot_.getEvents().onCommand("start",      std::bind(&TgBotSubscriber::start,          this, std::placeholders::_1));
+        bot_.getEvents().onCommand("help",       std::bind(&TgBotSubscriber::help,           this, std::placeholders::_1));
+        bot_.getEvents().onCommand("online",     std::bind(&TgBotSubscriber::online,         this, std::placeholders::_1));
+        bot_.getEvents().onCommand("renew",      std::bind(&TgBotSubscriber::renew,          this, std::placeholders::_1));
+        bot_.getEvents().onCommand("update",     std::bind(&TgBotSubscriber::update,         this, std::placeholders::_1));
+        bot_.getEvents().onCommand("startChat",  std::bind(&TgBotSubscriber::startChat,      this, std::placeholders::_1));
+        bot_.getEvents().onCommand("stopChat",   std::bind(&TgBotSubscriber::stopChat,       this, std::placeholders::_1));
+        bot_.getEvents().onCommand("bindNick",   std::bind(&TgBotSubscriber::bindNick,       this, std::placeholders::_1));
+        bot_.getEvents().onCommand("showNicks",  std::bind(&TgBotSubscriber::showNicks,      this, std::placeholders::_1));
+        bot_.getEvents().onCommand("deleteNick", std::bind(&TgBotSubscriber::deleteNick,     this, std::placeholders::_1));
+        bot_.getEvents().onCommand("stop",       std::bind(&TgBotSubscriber::stopAll,        this, std::placeholders::_1));
+        bot_.getEvents().onNonCommandMessage(    std::bind(&TgBotSubscriber::processMessage, this, std::placeholders::_1));
 
-        bot_.getEvents().onCommand("start",       [this](TgBot::Message::Ptr message) { start(message);          });
-        bot_.getEvents().onCommand("help",        [this](TgBot::Message::Ptr message) { help(message);           });
-        bot_.getEvents().onCommand("online",      [this](TgBot::Message::Ptr message) { online(message);         });
-        bot_.getEvents().onCommand("renew",       [this](TgBot::Message::Ptr message) { renew(message);          });
-        bot_.getEvents().onCommand("update",      [this](TgBot::Message::Ptr message) { update(message);         });
-        bot_.getEvents().onCommand("startChat",   [this](TgBot::Message::Ptr message) { startChat(message);      });
-        bot_.getEvents().onCommand("stopChat",    [this](TgBot::Message::Ptr message) { stopChat(message);       });
-        bot_.getEvents().onCommand("stop",        [this](TgBot::Message::Ptr message) { stopAll(message);        });
-        bot_.getEvents().onCommand("bindNick",    [this](TgBot::Message::Ptr message) { bindNick(message);       });
-        bot_.getEvents().onCommand("showNicks",   [this](TgBot::Message::Ptr message) { showNicks(message);      });
-        bot_.getEvents().onCommand("deleteNick",  [this](TgBot::Message::Ptr message) { deleteNick(message);     });
-        bot_.getEvents().onNonCommandMessage(     [this](TgBot::Message::Ptr message) { processMessage(message); });
+        // bot_.getEvents().onCommand("start",       [this](TgBot::Message::Ptr message) { start(message);          });
+        // bot_.getEvents().onCommand("help",        [this](TgBot::Message::Ptr message) { help(message);           });
+        // bot_.getEvents().onCommand("online",      [this](TgBot::Message::Ptr message) { online(message);         });
+        // bot_.getEvents().onCommand("renew",       [this](TgBot::Message::Ptr message) { renew(message);          });
+        // bot_.getEvents().onCommand("update",      [this](TgBot::Message::Ptr message) { update(message);         });
+        // bot_.getEvents().onCommand("startChat",   [this](TgBot::Message::Ptr message) { startChat(message);      });
+        // bot_.getEvents().onCommand("stopChat",    [this](TgBot::Message::Ptr message) { stopChat(message);       });
+        // bot_.getEvents().onCommand("stop",        [this](TgBot::Message::Ptr message) { stopAll(message);        });
+        // bot_.getEvents().onCommand("bindNick",    [this](TgBot::Message::Ptr message) { bindNick(message);       });
+        // bot_.getEvents().onCommand("showNicks",   [this](TgBot::Message::Ptr message) { showNicks(message);      });
+        // bot_.getEvents().onCommand("deleteNick",  [this](TgBot::Message::Ptr message) { deleteNick(message);     });
+        // bot_.getEvents().onNonCommandMessage(     [this](TgBot::Message::Ptr message) { processMessage(message); });
         // clang-format on
     }
 
