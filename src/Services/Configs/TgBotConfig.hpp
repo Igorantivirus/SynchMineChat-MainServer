@@ -36,6 +36,7 @@ inline TgBotConfig loadTgBotConfig(const std::string &config_path)
     std::ifstream config_file(config_path);
     auto config = nlohmann::json::parse(config_file);
     config_file.close();
+    std::cout << "i read: " << config.dump() << '\n';
     return config.template get<TgBotConfig>();
 }
 
