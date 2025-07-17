@@ -16,7 +16,15 @@ struct TgBotConfig
 
     const std::string& getMinecraftName(const std::string& tgName) const
     {
+        std::cout << "finding: " << tgName << '\n';
+        std::cout << "my dict\n";
+        for(const auto& [ky, value] : USERS_NICKS)
+            std::cout << ky << ' ' << value << '\n';
         const auto found = USERS_NICKS.find(tgName);
+        if(found == USERS_NICKS.end())
+            std::cout << "not found\n";
+        else
+            std::cout << "found\n";
         return found == USERS_NICKS.end() ? tgName : found->second;
     }
 
