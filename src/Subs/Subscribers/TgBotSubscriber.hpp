@@ -243,9 +243,6 @@ private:
         usersInfo_ = loadTgBotConfig(Service::config.TG_BOT_CONFIG);
         responseConfig_ = loadTgBotResponseConfig(Service::config.TG_BOT_RESPONSE_CONFIG);
 
-        for(const auto& [key, value] : usersInfo_.USERS_NICKS)
-            std::cout << key << ' ' << value << '\n';
-
         sendMessage(message->chat->id, responseConfig_.update);
     }
     void startChat(TgBot::Message::Ptr message)
@@ -358,7 +355,7 @@ private:
 
             brocker_.addMessage(msg);
 
-            std::string textMessage = '<' + message->from->username + '>' + ' ' + message->text;
+            std::string textMessage = '<' + usersInfo_.getMinecraftName(message->from->username) + '>' + ' ' + message->text;
             sendMessageToAllTgExcept(textMessage, message->chat->id);
         }        
     }
