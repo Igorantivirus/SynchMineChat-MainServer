@@ -320,6 +320,17 @@ private:
             brocker_.addMessage(msg);
             sendAudioToAllTgExcept(bot_.getApi().getFile(message->voice->fileId)->filePath, message->chat->id);
         }
+        if(!message->photo.empty() || message->video)
+        {
+            Message msg;
+            msg.from = type_;
+            msg.to = ClientType::any;
+            msg.fromId = id_;
+            msg.type = MessageType::media;
+            msg.msg["userName"] = usersInfo_.getMinecraftName(message->from->username);
+
+            brocker_.addMessage(msg);
+        }
         else
         {
             Message msg;
