@@ -303,7 +303,7 @@ private:
     void processMessage(TgBot::Message::Ptr message)
     {
         // (Сообщение пустой и нет голосового ) или чат закрыт
-        if ((message->text.empty() && !message->voice) || !isChatIsOpen(message->chat->id))
+        if ((message->text.empty() && message->photo.empty() && !message->video && !message->voice) || !isChatIsOpen(message->chat->id))
             return;
         if(notGeneralInSuperGroup(message))
             return;
