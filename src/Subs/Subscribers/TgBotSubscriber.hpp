@@ -186,6 +186,15 @@ private:
     {
         return usersInfo_.CHATS_ID.count(id);
     }
+    bool isMedia(TgBot::Message::Ptr message)
+    {
+        return !message->photo.empty()  || // Фото
+                message->video          || // Видео
+                message->animation      || // GIF
+                message->sticker        || // Стикер
+                message->videoNote      || // Кружочек
+                message->document;         // Любой документ (включая видео-файлы)
+    }
 
     void stopAll(TgBot::Message::Ptr message)
     {
@@ -302,11 +311,14 @@ private:
 
     void processMessage(TgBot::Message::Ptr message)
     {
-        // (Сообщение пустой и нет голосового ) или чат закрыт
-        if ((message->text.empty() && message->photo.empty() && !message->video && !message->voice) || !isChatIsOpen(message->chat->id))
+        std::cout << message->mediaGroupId << '\n';
+        //Проверка, что чат закрыт для сообщений
+        if(!isChatIsOpen(message->chat->id))
             return;
+        //Если супергруппа и чат не General - выход
         if(notGeneralInSuperGroup(message))
             return;
+
         if (message->voice)
         {
             Message msg;
@@ -320,7 +332,7 @@ private:
             brocker_.addMessage(msg);
             sendAudioToAllTgExcept(bot_.getApi().getFile(message->voice->fileId)->filePath, message->chat->id);
         }
-        else if(!message->photo.empty() || message->video)
+        if(isMedia(message))
         {
             Message msg;
             msg.from = type_;
@@ -331,7 +343,7 @@ private:
 
             brocker_.addMessage(msg);
         }
-        else
+        if(!message->text.empty())
         {
             Message msg;
             msg.from = type_;
@@ -345,7 +357,7 @@ private:
 
             std::string textMessage = '<' + message->from->username + '>' + ' ' + message->text;
             sendMessageToAllTgExcept(textMessage, message->chat->id);
-        }
+        }        
     }
 
 #pragma endregion
