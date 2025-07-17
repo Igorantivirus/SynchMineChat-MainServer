@@ -311,7 +311,6 @@ private:
 
     void processMessage(TgBot::Message::Ptr message)
     {
-        std::cout << message->mediaGroupId << '\n';
         //Проверка, что чат закрыт для сообщений
         if(!isChatIsOpen(message->chat->id))
             return;
