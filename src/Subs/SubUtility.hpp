@@ -53,7 +53,7 @@ enum class MessageType : unsigned char
     left,
     join,
     achievement,
-    picture
+    media
 };
 
 std::string toString(const MessageType type)
@@ -68,7 +68,7 @@ std::string toString(const MessageType type)
         {MessageType::left,        "left"       },
         {MessageType::join,        "join"       },
         {MessageType::achievement, "achievement"},
-        {MessageType::picture,     "picture"    }
+        {MessageType::media,     "media"    }
     };
     // clang-format on
     return converter.find(type)->second;
@@ -86,7 +86,7 @@ MessageType toMessageType(const std::string type)
         {"left",        MessageType::left       },
         {"join",        MessageType::join       },
         {"achievement", MessageType::achievement},
-        {"picture",     MessageType::picture    },
+        {"media",       MessageType::media      },
     };
     // clang-format on
     const auto found = converter.find(type);
