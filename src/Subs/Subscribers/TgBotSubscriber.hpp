@@ -320,7 +320,7 @@ private:
             brocker_.addMessage(msg);
             sendAudioToAllTgExcept(bot_.getApi().getFile(message->voice->fileId)->filePath, message->chat->id);
         }
-        if(!message->photo.empty() || message->video)
+        else if(!message->photo.empty() || message->video)
         {
             Message msg;
             msg.from = type_;
