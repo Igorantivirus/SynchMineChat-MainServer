@@ -1,7 +1,7 @@
 # SynchMineChat-MainServer
 ## (Synchronous Minecraft Chat — Main Server) 
 
-[![English version](https://img.shields.io/badge/English%20version-blue)](README.md)
+[![Russian version](https://img.shields.io/badge/English%20version-blue)](README_RU.md)
 
 ## Description
 
