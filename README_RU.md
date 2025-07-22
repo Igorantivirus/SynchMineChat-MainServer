@@ -21,7 +21,7 @@
 
 Библиотеки:
 * [tgbot-cpp](https://github.com/reo7sp/tgbot-cpp) - Тегелрамм бот C++
-* [CROW]([https://www.boost.org/](https://github.com/CrowCpp/Crow)) - Сервер
+* [CROW](https://github.com/CrowCpp/Crow) - Сервер
 * [nlohmann-json](https://github.com/nlohmann/json) - библиотека для работы с JSON
 
 ## Особенности реализации
