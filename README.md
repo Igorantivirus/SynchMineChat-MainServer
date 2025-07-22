@@ -20,7 +20,7 @@ The Minecraft server can be found here: [Game Server Link](https://github.com/Ig
 Programming Language: **C++20**
 
 Библиотеки:
-* [tgbot-cpp](https://github.com/reo7sp/tgbot-cpp) – Telegram Bot C+
+* [tgbot-cpp](https://github.com/reo7sp/tgbot-cpp) – Telegram Bot C++
 * [CROW](https://github.com/CrowCpp/Crow) – Web Server
 * [nlohmann-json](https://github.com/nlohmann/json) – JSON library
 
