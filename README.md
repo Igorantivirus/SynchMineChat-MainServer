@@ -21,7 +21,7 @@ Programming Language: **C++20**
 
 Библиотеки:
 * [tgbot-cpp](https://github.com/reo7sp/tgbot-cpp) – Telegram Bot C+
-* [CROW]([https://www.boost.org/](https://github.com/CrowCpp/Crow)) – Web Server
+* [CROW](https://github.com/CrowCpp/Crow) – Web Server
 * [nlohmann-json](https://github.com/nlohmann/json) – JSON library
 
 ## Implementation Features
